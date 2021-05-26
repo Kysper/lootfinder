@@ -11,11 +11,12 @@ scanBtn.addEventListener("click", () => {
 searchBtn.addEventListener("click", () => {
   const input = document.querySelector("#find").value;
   const list = document.querySelector(".list");
-  list.innerHTML = '';
   axios
     .get(`/api/search/${input}`)
     .then((response) => {
-      list.appendChild(response.data);
+     const html = response.data
+     list.innerHTML = html;
+     
     })
     .catch((err) => console.error(err.message));
 });

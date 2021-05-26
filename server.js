@@ -2,6 +2,8 @@ const express = require("express");
 const path = require("path");
 const axios = require("axios");
 const cheerio = require("cheerio");
+const { slice } = require("cheerio/lib/api/traversing");
+const { empty } = require("cheerio/lib/api/manipulation");
 const app = express();
 
 app.use(express.static(path.join(__dirname, "public")));
@@ -14,7 +16,7 @@ app.get("/", (req, res) => {
 });
 
 app.get(`/api/scan-image`, (req, res) => {
-  console.log("API CALLING TO IMAGGA");
+  res.send("API CALLING TO IMAGGA");
 });
 
 app.get(`/api/search/:input`, (req, res) => {
@@ -25,8 +27,24 @@ app.get(`/api/search/:input`, (req, res) => {
     .then(async (response) => {
       const html = response.data;
       const $ = cheerio.load(html);
-      const scrapedData = $("p").text();
-      await res.json(scrapedData.slice(0,500));
+      let scrapeData = await {
+        title: $(".firstHeading").text().slice(0, 120),
+        desc: $("p").text().slice(0, 2000),
+        link: query,
+      };
+
+      if (data) {
+        const HTMLTemplate = `<div class="card">
+        <h2>${scrapeData.title}</h2>
+        <div class="card-body"> 
+        <p class="desc">${scrapeData.desc}</div>
+        <a href="${scrapeData.link}">Read more...</a></div>`;
+        res.send(HTMLTemplate);
+      } else {
+        const HTMLTemplate = `<h1>No Page Found</h1>`
+        res.send(HTMLTemplate);
+
+      }
     })
     .catch((err) => console.error(err.message));
 });
