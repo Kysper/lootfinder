@@ -2,9 +2,10 @@ const express = require("express");
 const path = require("path");
 const axios = require("axios");
 const cheerio = require("cheerio");
-const { slice } = require("cheerio/lib/api/traversing");
-const { empty } = require("cheerio/lib/api/manipulation");
+const env = require("dotenv");
 const app = express();
+
+const PORT = process.env.PORT ||  8000
 
 app.use(express.static(path.join(__dirname, "public")));
 app.use(express.static(path.join(__dirname, "public/stylesheets")));
@@ -41,14 +42,13 @@ app.get(`/api/search/:input`, (req, res) => {
         <a href="${scrapeData.link}">Read more...</a></div>`;
         res.send(HTMLTemplate);
       } else {
-        const HTMLTemplate = `<h1>No Page Found</h1>`
+        const HTMLTemplate = `<h1>No Page Found</h1>`;
         res.send(HTMLTemplate);
-
       }
     })
     .catch((err) => console.error(err.message));
 });
 
-app.listen(8000, () => {
-  console.log("App running on port 8000");
+app.listen(PORT, () => {
+  console.log(`App running on port ${PORT}`);
 });
