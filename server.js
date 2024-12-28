@@ -1,8 +1,8 @@
+import process from "node:process";
 const express = require("express");
-const path = require("path");
+const path = require("node:path");
 const axios = require("axios");
 const cheerio = require("cheerio");
-const env = require("dotenv");
 const app = express();
 
 const PORT = process.env.PORT ||  8000
@@ -28,7 +28,7 @@ app.get(`/api/search/:input`, (req, res) => {
     .then(async (response) => {
       const html = response.data;
       const $ = cheerio.load(html);
-      let scrapeData = await {
+      const scrapeData = await {
         title: $(".firstHeading").text().slice(0, 120),
         desc: $("p").text().slice(0, 2000),
         link: query,
